@@ -13,14 +13,70 @@ btnsearch.addEventListener('click',async ()=>{
         alert('Enter a name of song');
     }
     else{
+     
+
+
     await axios.get('https://apimusic-xbv1.onrender.com/result/?query='+`${song}`)
-    .then((res)=>{
+    .then(async (res)=>{
         document.getElementById('songname').innerHTML=res.data[0].album
       document.getElementById('singer').innerHTML=res.data[0].singers
       songurl=res.data[0].media_url;
 console.log(res.data[0].media_url);
 console.log(res.data[0]);
-document.getElementById('image').src=res.data[0].image
+const options = {
+  method: 'GET',
+  url: 'https://youtube-media-downloader.p.rapidapi.com/v2/search/videos',
+  params: {keyword: `${song}`},
+  headers: {
+    'X-RapidAPI-Key': '6a470279c7mshc24e7631ba39188p13309ajsna8c3e521439b',
+    'X-RapidAPI-Host': 'youtube-media-downloader.p.rapidapi.com'
+  }
+};
+
+await axios.request(options).then(async function (response) {
+  let id=response.data.items[0].id;
+  const options1 = {
+    method: 'GET',
+    url: 'https://youtube-media-downloader.p.rapidapi.com/v2/video/details',
+    params: {videoId: id},
+    headers: {
+      'X-RapidAPI-Key': '6a470279c7mshc24e7631ba39188p13309ajsna8c3e521439b',
+      'X-RapidAPI-Host': 'youtube-media-downloader.p.rapidapi.com'
+    }
+  };
+  
+  await axios.request(options1).then(function (response) {
+    console.log(response.data.videos.items[0].url)
+    let vurl=response.data.videos.items[0].url;
+
+    document.getElementById('video').innerHTML=`<video width="400" height="400"  controls>
+  
+    <source  id="videos" src=${vurl} type="video/mp4">
+    
+</video>`;
+    // document.getElementById('image').src=response.data.videos.items[0].url
+  }).catch(function (error) {
+    console.error(error);
+  });
+}).catch(function (error) {
+  console.error(error);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 })
 .catch((err)=>{
 console.log(err)
@@ -56,4 +112,7 @@ btnpause.addEventListener('click',()=>{
 sound.pause();
     }
 })
+
+
+
 
