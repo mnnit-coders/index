@@ -20,7 +20,7 @@ btnsearch.addEventListener('click',async ()=>{
       songurl=res.data[0].media_url;
 console.log(res.data[0].media_url);
 console.log(res.data[0]);
-
+document.getElementById('image').src=res.data[0].image
 })
 .catch((err)=>{
 console.log(err)
